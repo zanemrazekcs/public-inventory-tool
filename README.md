@@ -45,6 +45,10 @@
 
 ### When making any changes to the app
 
+The server code is located in the server folder's server.js file.
+
+The client code's starts in the client folder's index.js file which renders the App.js component which begins to render a plethora of components which arestored in the components folder. 
+
 1. Comment the following code out of server.js (located within the server folder), upon doing so the front end will no longer be run on port 3001.
     ```JavaScript
         //used to run the create-react-app build (the client folder's contents). src: https://create-react-app.dev/docs/deployment/#other-solutions
