@@ -1,0 +1,12 @@
+{
+	"folders": [
+		{
+			"path": "../.."
+		},
+		{
+			"name": "inventoryTool",
+			"path": "../../inventoryTool"
+		}
+	],
+	"settings": {}
+}

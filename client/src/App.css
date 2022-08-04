@@ -1,0 +1,44 @@
+.App {
+  text-align: center;
+}
+
+
+/*Used in MapSelection.js and Result.js these are classes that format our room maps*/
+.roomView{
+  display: grid;
+  grid-auto-columns: minmax(50px, auto);
+  grid-auto-rows: minmax(50px, auto);
+  padding: 10px;
+  background-color: #a9a9a9;
+  border-radius: 5px;
+  color:white;
+  grid-gap: 5px;
+  width: auto;
+  margin: auto;
+}
+
+.box {
+  height: auto;
+  width: auto;
+  border: 1px solid black;
+  cursor: pointer;
+}
+/*END SECTION-------------------------------------------------------*/
+
+
+/*Used for table results---------------------------------------------------------------*/
+table{
+  margin: auto;
+  margin-top: 10px;/*ORDER MATTERS!*/
+  border-collapse: collapse;/*major key, makes lines single clean instead of ones for each td*/
+}
+tr:nth-child(even){
+  background-color: #dddddd;
+}
+th, td{
+  width: 50px;
+  padding: 10px;
+  border: 1px solid;
+}
+
+/*END SECTION--------------------------------------------------------------*/

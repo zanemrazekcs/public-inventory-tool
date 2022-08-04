@@ -1,0 +1,2 @@
+barcode,name,locationID,project,manufacturer,model,serialNum,notes,onLoan,customAttributes
+N00SAMPLE,SAMPLE NAME,R1:FLL:CB1,SAMPLE PROJECT,SAMPLE MANUFACTURER,SAMPLE MODEL,SAMPLE SERIAL#,SAMPLE NOTE,0,{"sample":"custttr"}
