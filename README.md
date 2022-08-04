@@ -1,5 +1,5 @@
 
-# Documentation
+# Inventory Tool Documentation
 
 # Table of Contents
 
