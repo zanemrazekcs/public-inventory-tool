@@ -1889,7 +1889,7 @@ Endpoints
 
 # MySQL Database: inventory_tool
 
-When creating the db make sure the database name and user's password in your MySQL Workbench match the information in the code in [Server.js](#serverjs)
+When creating the db make sure the database name (never capitalize db name) and user's password in your MySQL Workbench match the information in the code in [Server.js](#serverjs)
 
 ```JavaScript
     const db = mysql.createConnection({
