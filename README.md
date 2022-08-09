@@ -44,16 +44,21 @@
 
 # Important notes for the tool manager/developer
 
-### To run the app navigate to the server folder and click the file "server-OS" (where OS is the name of the OS your machine is running)
+## Running the app
 
+1. Make sure MySQL and Node.js are installed on your machine.
+1. Create a new database in MySQL called inventory_tool
+1. Download the .sql files in the db backups folder and run in either MySQL workbench (recommended) or using terminal commands.
+1. Ensure that your MySQL root user password is set in the [Server.js](#serverjs) file. (More information on this step in [MySQL Database: inventory_tool](#mysql-database-inventorytool) section)
+1. To run the app navigate to the server folder and click the file "server-`OS`" (where `OS` is the name of the OS your machine is running)
 
-### When making any changes to the app
+## When making changes to the app
 
-The server code is located in the server folder's server.js file.
+The server code is located in the `server` folder's `server.js` file.
 
-The client code's starts in the client folder's index.js file which renders the App.js component which begins to render a plethora of components which arestored in the components folder. 
+The client code's starts in the `client` folder's `index.js` file which renders the `App.js` component which begins to render a plethora of components which arestored in the `Components` folder. 
 
-1. Comment the following code out of server.js (located within the server folder), upon doing so the front end will no longer be run on port 3001.
+1. Comment the following code out of server.js (located within the server folder), upon doing so the front end will no longer be run on port 3001. (The server and its endpoints will still be run on port 3001)
     ```JavaScript
         //used to run the create-react-app build (the client folder's contents). src: https://create-react-app.dev/docs/deployment/#other-solutions
         const path = require('path')
@@ -61,10 +66,10 @@ The client code's starts in the client folder's index.js file which renders the 
         app.get('/', function (req, res) {
           res.sendFile(path.join(__dirname, 'build', 'index.html'));
         });
-        //------------- for this to work I moved the build folder from the client folder to the server folder
+        //------------- for this to work move the build folder from the client folder to the server folder
     ```
 2. Open two terminals in VS Code while developing and testing
-    - In terminal 1 cd into the client folder of the project. You can run the front end site by typing the command "mpm start" into the terminal and then opening localhost:3000.
+    - In terminal 1 cd into the client folder of the project. You can run the front end site by typing the command "npm start" into the terminal and then opening localhost:3000.
     - In terminal 2 cd into the server folder of the project. You can run the back end server by typing the command "node server.js" into the terminal. (note the server will open localhost:3001 which will read "cannot get /" just close the tab, this is no big deal while developing)
 3. After making desired changes type npm run build
 4. Move the build folder from the client folder to the server folder and uncomment the lines of code from the first step.
@@ -73,7 +78,7 @@ The client code's starts in the client folder's index.js file which renders the 
     - Optional: add specific versions of node and OSs to make the executable file for using: "targets": [ "node12-win-x64" ],
 7. Run the app by clicking the executable file that corresponds with your OS
 
-### If you wish to modify a locationID's value you must make the changes
+## If you wish to modify a locationID's value you must make the changes
 
 1. the locations table in the database. 
 2. Under the "Room & Box Arrays" that is within the "Map" folder that is within the "Components" folder modify the locationID stored in the "room#.js" file (# can be 1, 2, or 3 in this file name) which is the top view of the map. 
@@ -1889,7 +1894,7 @@ Endpoints
 
 # MySQL Database: inventory_tool
 
-When creating the db make sure the database name (never capitalize db name) and user's password in your MySQL Workbench match the information in the code in [Server.js](#serverjs)
+When creating the db, make sure the database name (never capitalize db name) and your machine's MySQL root user's password match the information in the code in [Server.js](#serverjs)
 
 ```JavaScript
     const db = mysql.createConnection({
@@ -1899,6 +1904,8 @@ When creating the db make sure the database name (never capitalize db name) and 
         database: "inventory_tool",
     });
 ```
+
+Back to [Important Notes For The Tool Manager/Developer](#important-notes-for-the-tool-managerdeveloper)
 
 Tables
 - locations
