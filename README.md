@@ -25,6 +25,10 @@
     - [AddForm.js](#addformjs)
     - [AddCSV.js](#addcsvjs)
 - [Server](#server)
+- [MySQL Database: inventory_tool](#mysql-database-inventorytool)
+- [Known Bugs](#known-bugs)
+- [Fixed Bugs](#fixed-bugs)
+- [Features to Modify](#features-to-modify)
 
 # User Instructions
 
@@ -1883,7 +1887,18 @@ Endpoints
             ```
 
 
-### ___MySQL Database: inventory_tool___
+# MySQL Database: inventory_tool
+
+When creating the db make sure the database name and user's password in your MySQL Workbench match the information in the code in [Server.js](#serverjs)
+
+```JavaScript
+    const db = mysql.createConnection({
+        user: "root",
+        host: "localhost",
+        password: "Password1",
+        database: "inventory_tool",
+    });
+```
 
 Tables
 - locations
@@ -1901,6 +1916,8 @@ Tables
     - onLoan (boolean/tinyint)
     - customAttributes (JSON)
 
+*sql table backup files are featured on the GitHub page to quickly set up the database*
+
 # Known Bugs
 
 - Sometimes pagination does not work
@@ -1915,8 +1932,4 @@ Tables
 
 - For navigation in [MapSelection.js](#mapselectionjs) change confirm button to a back button and advance stages by only clicking desired box
 - Clicking IDATS logo brings you to home page
-- Onsubmit of [AddForm.js](#addformjs) if there are any custom attributes that were not added to custom attribute list via the "ADD ATTR" button, current values in text box automatically submit as a custom attribute
-    - Change "ADD ATTR" button text to "ADD Another ATTR" 
-    - Change "CLEAR" button to only remove recent custom attribute
-- Upon clicking trash icon to delete parts display a warning ([Searchbar.js](#searchbarjs))
 - User instructions on "Help" button click in the navbar in [Header.js](#headerjs)
