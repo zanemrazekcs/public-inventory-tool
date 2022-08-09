@@ -49,7 +49,7 @@
 1. Make sure MySQL and Node.js are installed on your machine.
 1. Create a new database in MySQL called inventory_tool
 1. Download the .sql files in the db backups folder and run in either MySQL workbench (recommended) or using terminal commands.
-1. Ensure that your MySQL root user password is set in the [Server.js](#serverjs) file. (More information on this step in [MySQL Database: inventory_tool](#mysql-database-inventorytool) section)
+1. Ensure that your MySQL root user password is set in the [Server.js](#serverjs) file's mysql.createConnection. (More information on this step in the [MySQL Database: inventory_tool](#mysql-database-inventorytool) section)
 1. To run the app navigate to the server folder and click the file "server-`OS`" (where `OS` is the name of the OS your machine is running)
 
 ## When making changes to the app
@@ -68,14 +68,15 @@ The client code's starts in the `client` folder's `index.js` file which renders 
         });
         //------------- for this to work move the build folder from the client folder to the server folder
     ```
+2. Delete the executable files `server-linux`, `server-macos`, and `server-win.exe` from the `server` folder
 2. Open two terminals in VS Code while developing and testing
-    - In terminal 1 cd into the client folder of the project. You can run the front end site by typing the command "npm start" into the terminal and then opening localhost:3000.
-    - In terminal 2 cd into the server folder of the project. You can run the back end server by typing the command "node server.js" into the terminal. (note the server will open localhost:3001 which will read "cannot get /" just close the tab, this is no big deal while developing)
-3. After making desired changes type npm run build
-4. Move the build folder from the client folder to the server folder and uncomment the lines of code from the first step.
-5. Now by typing "node server.js in terminal 2 (the server terminal) the entire front end and back end programs run
-6. Make this an executable file by typing "pkg ." into terminal 2
-    - Optional: add specific versions of node and OSs to make the executable file for using: "targets": [ "node12-win-x64" ],
+    - In terminal 1 `cd` into the `client` folder of the project. You can run the front end site by typing the command `npm start` into the terminal and then opening `localhost:3000`.
+    - In terminal 2 `cd` into the `server` folder of the project. You can run the back end server by typing the command `node server.js` into the terminal. (note the server will open `localhost:3001` which will read `cannot get /` just close the tab, this is no big deal while developing)
+3. After making desired changes type `npm run build`
+4. Move the `build` folder from the `client` folder to the `server` folder and uncomment the lines of code from the first step.
+5. Now by typing `node server.js` in terminal 2 (the server terminal) the entire front end and back end programs run on port 3001
+6. Make this into executable files by typing `pkg .` into terminal 2
+    - Optional: add specific versions of node and OSs to make the executable file by adding `"targets": [ "node12-win-x64" ],` (insert your specific versions of node and OS) to `package.json` after the `assets` object
 7. Run the app by clicking the executable file that corresponds with your OS
 
 ## If you wish to modify a locationID's value you must make the changes
@@ -1691,11 +1692,9 @@ Returns
 
 JavaScript runtime environment that allows JavaScript to be run outside of the context of a web browser. Node.js is designed for server side use and can process new requests as soon as it sends the previous request out. 
 
-## Express
-
-## CORS
-
 ### ___Server.js___
+
+Back to [Important Notes For The Tool Manager/Developer](#important-notes-for-the-tool-managerdeveloper)
 
 Modules
 - Express
