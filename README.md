@@ -44,9 +44,16 @@
 
 # Important notes for the tool manager/developer
 
+## Software Checklist
+
+- Chrome or Firefox browser
+- Inventory Tool Project Folder (GitHub repo)
+- Node.js (should come with Node Package Manager (npm))
+- MySQL (community edition with MySQL workbench recommended)
+
 ## Running the app
 
-1. Make sure MySQL and Node.js are installed on your machine.
+1. Make sure all software from the [Software Checklist](#software-checklist) is installed on your machine.
 1. Create a new database in MySQL called inventory_tool
 1. Download the .sql files in the db backups folder and run in either MySQL workbench (recommended) or using terminal commands.
 1. Ensure that your MySQL root user password is set in the [Server.js](#serverjs) file's mysql.createConnection. (More information on this step in the [MySQL Database: inventory_tool](#mysql-database-inventorytool) section)
