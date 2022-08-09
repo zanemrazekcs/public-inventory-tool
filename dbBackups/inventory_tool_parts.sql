@@ -47,6 +47,7 @@ CREATE TABLE `parts` (
 
 LOCK TABLES `parts` WRITE;
 /*!40000 ALTER TABLE `parts` DISABLE KEYS */;
+INSERT INTO `parts` (`barcode`, `name`, `locationID`, `project`, `manufacturer`, `model`, `serialNum`, `notes`, `onLoan`, `customAttributes`) VALUES ('barcode', 'name column', 'R1:BRU:CBN1', 'project', 'manufacturer', 'model', 'serial number', 'enter any notes in this column', '0', '{\"sample\": \"custom attribute\"}');
 /*!40000 ALTER TABLE `parts` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
