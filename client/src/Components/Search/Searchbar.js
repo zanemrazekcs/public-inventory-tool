@@ -6,6 +6,11 @@ import AdvancedSearch from "./AdvancedSearch";
 import MapSelection from "../Map/MapSelection";
 import Result from "./Result";
 
+
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
+
+
 export default function Searchbar(props){
     const {part, setPart, locationList} = props
 
@@ -61,6 +66,13 @@ export default function Searchbar(props){
         }
     }
     
+    //handles the visibility of the warning delete modal
+    const [deleteModal, setDeleteModal] = useState(false)
+
+    const hideModal = () => {
+        setDeleteModal(false)
+    }
+
     const deleteParts = (id) => {
         Axios.delete(`http://localhost:3001/deleteParts/${id}`).then((response)=>{
           setDeleteCount((prev)=>(prev+1))
@@ -72,6 +84,8 @@ export default function Searchbar(props){
             deleteParts(idList[i])
         }
         setIdList([])//clear idList now that all of its parts are deleted
+
+        hideModal()//hides the warning modal
     }
 
 
@@ -130,7 +144,7 @@ export default function Searchbar(props){
 
             const results = fuse.search(query)
             return results.map(result=> result.item)
-        //}
+        //}//uncomment line if you want some results to display when user clicks "search by name" search bar
         
     }
     
@@ -184,7 +198,20 @@ export default function Searchbar(props){
     return(
         <div>
             <div className="col-10 offset-1 d-flex justify-content-evenly align-items-center">
-                {idList[0] !== undefined && <img src={trash} alt="DELETE" className="m-1" style={{width: '40px', cursor: 'pointer'}} onClick={deleteMultipleParts}/>}
+                {idList[0] !== undefined && <img src={trash} alt="DELETE" className="m-1" style={{width: '40px', cursor: 'pointer'}} onClick={()=>{setDeleteModal(true)}}/>}
+
+                {<Modal show={deleteModal} onHide={hideModal}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>WARNING</Modal.Title>
+                    </Modal.Header>
+        
+                    <Modal.Body>Are you sure you want to delete these parts</Modal.Body>
+                    
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={hideModal}>Cancel</Button>
+                        <Button variant="danger" onClick={deleteMultipleParts}>DELETE</Button>
+                    </Modal.Footer>
+                </Modal>}
 
                 <div className="form-check m-1">
                     <input className="form-check-input" type="checkbox" id="loanedParts" onClick={showLoanHandler}/>

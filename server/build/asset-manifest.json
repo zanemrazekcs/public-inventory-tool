@@ -1,17 +1,17 @@
 {
   "files": {
     "main.css": "/static/css/main.5eec1814.css",
-    "main.js": "/static/js/main.b9e17600.js",
+    "main.js": "/static/js/main.25ae4bb7.js",
     "static/js/787.c4e7f8f9.chunk.js": "/static/js/787.c4e7f8f9.chunk.js",
     "static/media/IDATSLogo.png": "/static/media/IDATSLogo.426cc0447de49f1a1bfa.png",
     "static/media/editIcon.png": "/static/media/editIcon.3f69390cbd68d6a92fc3.png",
     "index.html": "/index.html",
     "main.5eec1814.css.map": "/static/css/main.5eec1814.css.map",
-    "main.b9e17600.js.map": "/static/js/main.b9e17600.js.map",
+    "main.25ae4bb7.js.map": "/static/js/main.25ae4bb7.js.map",
     "787.c4e7f8f9.chunk.js.map": "/static/js/787.c4e7f8f9.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.5eec1814.css",
-    "static/js/main.b9e17600.js"
+    "static/js/main.25ae4bb7.js"
   ]
 }

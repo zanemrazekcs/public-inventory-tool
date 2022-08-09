@@ -26,7 +26,7 @@ export default function TableData(props){
 
     //display custom attributes-----------------------------------------------------------------------
     const customAttributesDisplay = useRef('')
-    if(field === 'customAttributes' && item !== null){
+    if(field === 'customAttributes' && item !== null && item !== '{}'){
         let modItem = JSON.parse(item)//takes JSON object and makes a js object out of it
 
         customAttributesDisplay.current =
@@ -60,15 +60,15 @@ export default function TableData(props){
     return(
                 <td className='tableData' onMouseEnter={cellHoverOn} onMouseLeave={cellHoverOff}>
                     <div>
-                        {editCell !== 'editCell3' && field !== 'name' && field !== 'onLoan' && (field !== 'customAttributes' || item === null || item === undefined) &&
-                            <p>{(item === ''||item === null || item === undefined)?'-':item}</p>//displays "-" when no attribute, or displays the item
+                        {editCell !== 'editCell3' && field !== 'name' && field !== 'onLoan' && (field !== 'customAttributes' || item === null || item === undefined || item === '{}') &&
+                            <p>{(item === ''|| item === null || item === undefined || item === '{}')?'-':item}</p>//displays "-" when no attribute, or displays the item
                         }
 
                         {editCell !== 'editCell3' && field === 'name' && 
                             <p>{highlightedItem}</p>//to display highlighted item
                         }
 
-                        {editCell !== 'editCell3' && (field === 'customAttributes' && item !== null && item !== undefined) && 
+                        {editCell !== 'editCell3' && (field === 'customAttributes' && item !== null && item !== undefined && item !== '{}') && 
                             <div>{customAttributesDisplay.current}</div>//displays the custom attributes
                         }
 

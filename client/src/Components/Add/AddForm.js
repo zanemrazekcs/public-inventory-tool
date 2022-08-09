@@ -1,17 +1,30 @@
-import React, { useEffect, useState } from "react";
+import React, { useRef, useState } from "react";
 import Axios from 'axios';
 
 
 export default function AddForm(props){
     const {part, setPart, locationList, setErrorList, clearErrorList} = props
 
+    //customAttributes ref that holds all the new custom attributes the user enters
+    const customAttributes = useRef({})
+
+    //stores the keys of each customAttribute in the order they were added if the user would like to delete them
+    const custAttrKeys = useRef([])
+
+    //state to display the customAttributes ref in a neat manner
+    const [customAttributesDisplay, setCustomAttributesDisplay] = useState(
+        Object.keys(customAttributes.current).map((k,key)=>(
+            <p key={key}>{k}: {customAttributes.current[k]}</p>
+        ))
+    )
+
     //DB interaction function
     const addPart = () => {
         
         //formats the custom attributes to be added to MySQL db as a JSON object
         let custAttrs = '{'+
-            Object.keys(customAttributes).map((key)=>(
-                '"'+key+'": "'+customAttributes[key]+'"'
+            Object.keys(customAttributes.current).map((key)=>(
+                '"'+key+'": "'+customAttributes.current[key]+'"'
             ))+'}'
     
             Axios.post('http://localhost:3001/addPart', 
@@ -37,44 +50,56 @@ export default function AddForm(props){
 
                 //resets the part & custom attributes
                 setPart({barcode:"", name: '', locationID:'', project:'', manufacturer:'', model:'', serialNum:'', notes:'', onLoan: 0, customAttributes:''})
-                setCustomAttributes({})
+                
+                //resets customAttribute object and display
+                customAttributes.current = {}
+                setCustomAttributesDisplay([])
               }
         
             })
       }
 
-    //END DB interaction function
 
     //sets appropriate attribute of part
     const partSetter = (event) => {
         setPart(prev => {return{...prev, [event.target.name]:event.target.value}})
     }
 
-    //customAttributes state
-    const [customAttributes, setCustomAttributes] = useState({})
-
-    let customAttributesDisplay =
-    Object.keys(customAttributes).map((k,key)=>(
-        <p key={key}>{k}: {customAttributes[k]}</p>
-    ))
-
     const addCustomAttribute = () =>{
-        setCustomAttributes((prev)=>{return{...prev, [document.getElementById('key').value]: document.getElementById('value').value}}) 
+        //adds new key value pair to the customAttributes object
+        customAttributes.current[document.getElementById('key').value] = document.getElementById('value').value
+
+        //pushes the key from the new pair to an array to track order they were added
+        custAttrKeys.current.push(document.getElementById('key').value)
+
+        //clears the text input boxes so user can enter another key value
+        document.getElementById('key').value = ''
+        document.getElementById('value').value = ''
+
+        //updates the display for the user to see
+        setCustomAttributesDisplay(
+            Object.keys(customAttributes.current).map((k,key)=>(
+                <p key={key}>{k}: {customAttributes.current[k]}</p>
+            ))
+        )
     }
 
     const clearCustomAttributes = () => {
-        setCustomAttributes({})
+        //pops the most recent element in the array of custom attribute keys, deletes that item from the customAttributes object
+        delete customAttributes.current[custAttrKeys.current.pop()]
+
+        //updates the display state
+        setCustomAttributesDisplay(
+            Object.keys(customAttributes.current).map((k,key)=>(
+                <p key={key}>{k}: {customAttributes.current[k]}</p>
+            ))
+        )
     }
 
-    //anytime customAttributes updates we clear the key value input boxes
-    useEffect(()=>{
-        document.getElementById('key').value = ''
-        document.getElementById('value').value = ''
-    },[customAttributes])
-
     const addPartClick = () => {
+        addCustomAttribute()//adds the current text input for key value pairs in case user never clicked "ADD Another ATTR"
+
         clearErrorList()
-        clearCustomAttributes()
 
         addPart()
     }
@@ -161,8 +186,8 @@ export default function AddForm(props){
                     </div>
 
                     <div className="col d-flex justify-content-evenly align-items-center py-1">
-                        <button className="btn btn-sm btn-success mx-1" onClick={addCustomAttribute}>ADD ATTR</button>
-                        <button className="btn btn-sm btn-danger mx-1" onClick={clearCustomAttributes}>CLEAR ATTRS</button>
+                        <button className="btn btn-sm btn-success mx-1" onClick={addCustomAttribute}>ADD Another ATTR</button>
+                        <button className="btn btn-sm btn-danger mx-1" onClick={clearCustomAttributes}>CLEAR Recent ATTR</button>
                     </div>
 
                 </div>

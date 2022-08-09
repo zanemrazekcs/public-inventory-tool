@@ -228,6 +228,8 @@ States
             new Array(partList.length).fill(false)//an array where every index represents a checkbox's checked value
         );//this does create a warning because there is no single source of truth - meaning a user can control whether or not the checkbox is changed via a click but also changing search modes will change the value of the checkbox. For our use case this is actually what we want
         ```
+- deleteModal (boolean)
+    - Determines whether or not a warning modal will appear
 - showLoan (boolean)
     - When the “Show Loaned Parts” checkbox is checked, this value will be set to true and the results displayed to the user will display the parts that are out on loan and each part’s loan status.
 - query (string)
@@ -334,6 +336,8 @@ functions
             }
         }
         ```
+- hideModal
+    - sets the deleteModal state to false
 - deleteParts
     - Parameters
         - id - the id of the part to be deleted
@@ -355,6 +359,8 @@ functions
                     deleteParts(idList[i])
                 }
                 setIdList([])//clear idList now that all of its parts are deleted
+
+                hideModal()//hides the warning modal
             }
         ```
 - showLoanHandler Params: (Event Object)
@@ -400,7 +406,25 @@ functions
         ```
 Returns
 - Garbage can icon (visible when idList is not empty (idList[0] !== undefined).)
-    - onClick calls deleteMultipleParts
+    - onClick sets deleteModal state to true and a warning modal will appear
+- Delete Warning modal (visible when deleteModal state === true)
+    - Clicking the red "DELETE" button will call deleteMultipleParts
+    - Clicking the cancel button or closing the modal will not result in the parts beung deleted
+    - Uses react-bootstrap libraries for the Modal and Button tags
+        ```JSX
+            {<Modal show={deleteModal} onHide={hideModal}>
+                <Modal.Header closeButton>
+                    <Modal.Title>WARNING</Modal.Title>
+                </Modal.Header>
+        
+                <Modal.Body>Are you sure you want to delete these parts</Modal.Body>
+                    
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={hideModal}>Cancel</Button>
+                    <Button variant="danger" onClick={deleteMultipleParts}>DELETE</Button>
+                </Modal.Footer>
+            </Modal>}
+        ```
 - “Show Loaned Parts” label and checkbox
     - onClick calls showLoanHandler
 - Input textbox for search bar
@@ -1145,7 +1169,7 @@ useRef
     ```JSX
         const customAttributesDisplay = useRef('')
 
-        if(field === 'customAttributes' && item !== null){
+        if(field === 'customAttributes' && item !== null && item !== '{}'){
             let modItem = JSON.parse(item)//takes JSON object and makes a js object out of it
 
             customAttributesDisplay.current =
@@ -1187,15 +1211,15 @@ Returns
 - td
     - at stage 1 the value is displayed in the cell or if the value does not exist "-" is displayed
     ```JSX
-        {editCell !== 'editCell3' && field !== 'name' && field !== 'onLoan' && (field !== 'customAttributes' || item === null || item === undefined) && 
-            <p>{(item === ''||item === null || item === undefined)?'-':item}</p>//displays "-" when no attribute, or displays the item
+        {editCell !== 'editCell3' && field !== 'name' && field !== 'onLoan' && (field !== 'customAttributes' || item === null || item === undefined || item === '{}') && 
+            <p>{(item === ''||item === null || item === undefined || item === '{}')?'-':item}</p>//displays "-" when no attribute, or displays the item
         }
 
         {editCell !== 'editCell3' && field === 'name' && 
             <p>{highlightedItem}</p>//to display highlighted item
         }
 
-        {editCell !== 'editCell3' && (field === 'customAttributes' && item !== null && item !== undefined) && 
+        {editCell !== 'editCell3' && (field === 'customAttributes' && item !== null && item !== undefined && item !== '{}') && 
             <div>{customAttributesDisplay.current}</div>//displays the custom attributes
         }
 
@@ -1342,18 +1366,20 @@ Props
 - setErrorList
 - clearErrorList
 
-States
-- customAttributes
+Refs
+- customAttributes ({})
     - object that contains the key value pairs of all custom attributes for the specified part
-
-Variables
+- custAttrKeys ([])
+    - stores the keys of each customAttribute in the order they were added if the user would like to delete them
+States
 - customAttributesDisplay
-    - a map of the customAttributes to display and stylize the object of attributes well
+    - state to display the customAttributes ref in a neat manner
     ```JSX
-        let customAttributesDisplay =
-            Object.keys(customAttributes).map((k,key)=>(
-                <p key={key}>{k}: {customAttributes[k]}</p>
+        const [customAttributesDisplay, setCustomAttributesDisplay] = useState(
+            Object.keys(customAttributes.current).map((k,key)=>(
+                <p key={key}>{k}: {customAttributes.current[k]}</p>
             ))
+        )
     ```
 
 Functions
@@ -1361,38 +1387,43 @@ Functions
     - adds a part to the database using the POST server endpoint
     ```JSX
         const addPart = () => {
-            
+
           //formats the custom attributes to be added to MySQL db as a JSON object
           let custAttrs = '{'+
-              Object.keys(customAttributes).map((key)=>(
-                  '"'+key+'": "'+customAttributes[key]+'"'
+              Object.keys(customAttributes.current).map((key)=>(
+                  '"'+key+'": "'+customAttributes.current[key]+'"'
               ))+'}'
 
-            Axios.post('http://localhost:3001/addPart', 
-            {
-              barcode: part.barcode, 
-              name: part.name, 
-              locationID: part.locationID, 
-              project: part.project, 
-              manufacturer: part.manufacturer, 
-              model: part.model, 
-              serialNum: part.serialNum, 
-              notes: part.notes,
-              onLoan: part.onLoan,
-              customAttributes: custAttrs
-            }
-            ).then((response)=>{
-              
-              if(response.data.sqlMessage !== undefined){
-                setErrorList((prev)=>[...prev, {errno: response.data.errno, code: response.data.code, message: response.data.sqlMessage}]);
+              Axios.post('http://localhost:3001/addPart', 
+              {
+                barcode: part.barcode, 
+                name: part.name, 
+                locationID: part.locationID, 
+                project: part.project, 
+                manufacturer: part.manufacturer, 
+                model: part.model, 
+                serialNum: part.serialNum, 
+                notes: part.notes,
+                onLoan: part.onLoan,
+                customAttributes: custAttrs
               }
-              else{
-                setErrorList(['success'])
-                //resets the part & custom attributes
-                setPart({barcode:"", name: '', locationID:'', project:'', manufacturer:'', model:'', serialNum:'', notes:'', onLoan: 0, customAttributes:''})
-                setCustomAttributes({})
-              }
-            })
+              ).then((response)=>{
+                
+                if(response.data.sqlMessage !== undefined){
+                  setErrorList((prev)=>[...prev, {errno: response.data.errno, code: response.data.code, message: response.data.sqlMessage}]);
+                }
+                else{
+                  setErrorList(['success'])
+
+                  //resets the part & custom attributes
+                  setPart({barcode:"", name: '', locationID:'', project:'', manufacturer:'', model:'', serialNum:'', notes:'', onLoan: 0, customAttributes:''})
+
+                  //resets customAttribute object and display
+                  customAttributes.current = {}
+                  setCustomAttributesDisplay([])
+                }
+
+              })
         }
       ```
 - partSetter Params: (Event object)
@@ -1406,37 +1437,50 @@ Functions
     - adds a new custom attribute to the customAttributes state in a similar way to partSetter
     ```JSX
         const addCustomAttribute = () =>{
-            setCustomAttributes((prev)=>
-                {return{...prev, [document.getElementById('key').value]: document.getElementById('value').value}}) 
+            //adds new key value pair to the customAttributes object
+            customAttributes.current[document.getElementById('key').value] = document.getElementById('value').value
+
+            //pushes the key from the new pair to an array to track order they were added
+            custAttrKeys.current.push(document.getElementById('key').value)
+
+            //clears the text input boxes so user can enter another key value
+            document.getElementById('key').value = ''
+            document.getElementById('value').value = ''
+
+            //updates the display for the user to see
+            setCustomAttributesDisplay(
+                Object.keys(customAttributes.current).map((k,key)=>(
+                    <p key={key}>{k}: {customAttributes.current[k]}</p>
+                ))
+            )
         }
     ```
 - clearCustomAttributes
-    - resets the customAttribites state
+    - removes the most recent custom attribute key value pair added
     ```JSX
         const clearCustomAttributes = () => {
-            setCustomAttributes({})
+            //pops the most recent element in the array of custom attribute keys, deletes that item from the customAttributes object
+            delete customAttributes.current[custAttrKeys.current.pop()]
+
+            //updates the display state
+            setCustomAttributesDisplay(
+                Object.keys(customAttributes.current).map((k,key)=>(
+                    <p key={key}>{k}: {customAttributes.current[k]}</p>
+                ))
+            )
         }
     ```
 - addPartClick
-    - when add part is clicked the errorList and customAttributes are cleared and addPart is called
+    - adds part to db and handles other housekeeping 
     ```JSX
         const addPartClick = () => {
+            addCustomAttribute()//adds the current text input for key value pairs in case user never clicked "ADD Another ATTR"
+
             clearErrorList()
-            clearCustomAttributes()
 
             addPart()
         }
     ```
-
-useEffect
-- anytime the custom attributes object is cleared or added to, the input boxes clear so more attributes can be added
-```JSX
-    useEffect(()=>{
-        document.getElementById('key').value = ''
-        document.getElementById('value').value = ''
-    },[customAttributes])
-```
-
 
 Returns
 - input for 
@@ -1472,9 +1516,9 @@ Returns
         </div>
     ```
 - Custom attribute key and value text inputs
-- "ADD ATTR" button
+- "ADD Another ATTR" button
     - onClick calls addCustomAttribute
-- "CLEAR ATTRS" button
+- "CLEAR Recent ATTR" button
     - onClick calls clearCustomAttributes
 - customAttributesDisplay (visible if custom attributes exist)
 - "ADD PART" button
