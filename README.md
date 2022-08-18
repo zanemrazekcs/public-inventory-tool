@@ -1911,6 +1911,8 @@ When creating the db, make sure the database name (never capitalize db name) and
     });
 ```
 
+You may even have to enter the following SQL command into MySQL Workbench: `ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'insert_your_password_here';`
+
 Back to [Important Notes For The Tool Manager/Developer](#important-notes-for-the-tool-managerdeveloper)
 
 Tables
